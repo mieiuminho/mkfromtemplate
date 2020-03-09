@@ -5,13 +5,14 @@
 show_help() {
   cat <<EOF
 USAGE:
-        test_template [OPTIONS] <PROGRAM> ...<PROGRAM ARGUMENTS>
+        test_template [OPTIONS] -n <PROGRAM> ...<PROGRAM ARGUMENTS>
 
 EXAMPLE:
-        ./tests/test_template 'bin/mkfromtemplate' -o 'out/' -t 'templates/flex.tmpl' flex
+        ./tests/test_template 'bin/mkfromtemplate' -n flexample -o 'out/' -t 'templates/flex.tmpl'
 
 OPTIONS:
         -h, -?, --help          Display this help message.
+        -n <PROJECT>            The project name.
         -o <OUT_DIR>            The output directory.
         -t <TEMPLATE>           The tempalte file to use.
 EOF
@@ -23,6 +24,13 @@ while [[ $1 == -* ]]; do
     show_help
     exit 0
     ;;
+  -n) if (($# > 1)); then
+    project=$2
+    shift 2
+  else
+    echo "-n requires an argument" 1>&2
+    exit 1
+  fi ;;
   -t) if (($# > 1)); then
     template_file=$2
     shift 2
@@ -61,10 +69,11 @@ debug() {
   echo_info "template:" "$template_file"
   echo_info "output:" "$out_dir"
   echo_info "binário:" "$binary"
+  echo_info "project name": "$project"
   echo_info "args:" "$@"
   echo -e "##################"
 }
 
 debug "$@"
 
-./$binary "$out_dir" "$@" <"$template_file"
+./$binary -t "$template_file" "$project" "$out_dir" "$@"
