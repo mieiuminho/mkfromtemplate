@@ -2,11 +2,12 @@ CC      = gcc
 LD      = gcc
 CFLAGS  = -O2 -Wall -Wextra
 CFLAGS += -Wno-unused-parameter -Wno-unused-function -Wno-unused-result
-LIBS    = `pkg-config --cflags --libs glib-2.0` -lfl 
+LIBS    = `pkg-config --cflags --libs glib-2.0` -lfl
 INCLDS  = -I $(INC_DIR)
 BIN_DIR = bin
 BLD_DIR = build
 DOC_DIR = docs
+TPL_DIR = templates
 INC_DIR = includes
 LOG_DIR = log
 OUT_DIR = out
@@ -30,14 +31,14 @@ vpath %.c $(SRC_DIR) $(OUT_DIR)
 $(OUT_DIR)/%.c: $(SRC_DIR)/%.l
 	flex -o $@ $<
 
-$(BLD_DIR)/%.d: %.c 
+$(BLD_DIR)/%.d: %.c
 	$(CC) -M $(INCLDS) $(CFLAGS) $(LIBS) $< -o $@
 
 $(BLD_DIR)/%.o: %.c
 	$(CC) -c $(INCLDS) $(CFLAGS) $(LIBS) $< -o $@
 
 $(BIN_DIR)/$(PROGRAM): $(CLEX) $(DEPS) $(OBJS)
-	$(CC) $(INCLDS) $(LIBS) $(OBJS) -o $@ 
+	$(CC) $(INCLDS) $(LIBS) $(OBJS) -o $@
 
 build: setup $(BIN_DIR)/$(PROGRAM)
 
@@ -59,8 +60,8 @@ debug: build
 doc:
 	@doxygen $(DOC_DIR)/Doxyfile
 
-test:
-	@echo "Write some tests!"
+test: build
+	@./$(TST_DIR)/test_template.sh -o $(OUT_DIR) -t $(TPL_DIR)/flex.tmpl $(BIN_DIR)/$(PROGRAM) flex
 
 setup:
 	@mkdir -p $(BIN_DIR)
@@ -76,3 +77,4 @@ clean:
 		$(DOC_DIR)/html $(DOC_DIR)/latex
 	@echo ""
 	@echo "...✓ done!"
+
