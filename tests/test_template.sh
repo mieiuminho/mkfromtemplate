@@ -8,10 +8,10 @@ USAGE:
         test_template [OPTIONS] -n <PROGRAM> ...<PROGRAM ARGUMENTS>
 
 EXAMPLE:
-        ./tests/test_template 'bin/mkfromtemplate' -n flexample -o 'out/' -t 'templates/flex.tmpl'
+        ./tests/test_template -n flexample -o 'out/' -t 'templates/flex.tmpl'
 
 OPTIONS:
-        -h, -?, --help          Display this help message.
+        -h, --help              Display this help message.
         -n <PROJECT>            The project name.
         -o <OUT_DIR>            The output directory.
         -t <TEMPLATE>           The tempalte file to use.
@@ -20,7 +20,7 @@ EOF
 
 while [[ $1 == -* ]]; do
   case "$1" in
-  -h | --help | -\?)
+  -h | --help )
     show_help
     exit 0
     ;;
@@ -57,12 +57,7 @@ while [[ $1 == -* ]]; do
   esac
 done
 
-if (($# > 1)); then
-  binary=$1
-  shift 1
-else
-  binary=bin/mkfromtemplate
-fi
+binary=bin/mkfromtemplate
 
 debug() {
   echo -e "### DEGUB INFO ###"

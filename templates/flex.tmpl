@@ -2,23 +2,28 @@
 
 email: jj@di.uminho.pt     
 author: J. João
+organization: Universidade do Minho
 
 # "name" é dado por argumento de linha de comando (argv[1])
 
 === tree
 
 {%name%}/
-- {%name%}.fl
+- src/
+-- {%name%}.fl
 - doc/
 -- {%name%}.md
-- exemplo/
+-- html/
+--- img/
+- examples/
 - README
 - Makefile
 
 === Makefile
+SRC_DIR = src
 
-{%name%}: {%name%}.fl
-	flex {%name%}.fl
+{%name%}: $(SRC_DIR)/{%name%}.fl
+	flex $(SRC_DIR)/{%name%}.fl
 	cc -o {%name%} lex.yy.c
 
 install: {%name%}

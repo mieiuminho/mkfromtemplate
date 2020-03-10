@@ -9,9 +9,10 @@
 #include <unistd.h>
 
 #include "global.h"
+#include "util.h"
 
 #include "metadata.h"
-#include "file_tree_util.h"
+#include "file_tree.h"
 %}
 
 %%
@@ -64,14 +65,18 @@ int main(int argc, char** argv) {
     file_tree_init(project_name);
 
     dup2(open(template_file, O_RDONLY), 0);
+    print_title("METADATA");
     metalex();
-    printf("<inicio>%s<fim>\n", metadata_get("email"));
-    printf("<inicio>%s<fim>\n", metadata_get("author"));
+
+    /* ---------------- */
 
     dup2(open(filtered_template_path, O_RDONLY), 0);
+    print_title("TREE");
     treelex();
 
-    printf("Fim do programa!\n");
+    /* ---------------- */
+
+    printf("FIM DO PROGRAMA (mkfromtemplate.l)\n");
 
     return 0;
 }

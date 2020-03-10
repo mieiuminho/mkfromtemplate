@@ -13,6 +13,7 @@ GHashTable* hash_table_metadata;
 FILE* filtered_template;
 
 void metadata_update_values_in_template(char* variable, char* value, char* file_path);
+void debug_info_metadata();
 %}
 
 %x METADATA
@@ -26,7 +27,7 @@ SEPARATOR       ^{ws}==={ws}
 
                                     BEGIN 0;
 
-{SEPARATOR}meta                     { BEGIN METADATA; }
+{SEPARATOR}meta                     BEGIN METADATA;
 
 <METADATA>{qname}\:{ws}(.)+         { metadata_add(yytext); }
 
@@ -35,13 +36,14 @@ SEPARATOR       ^{ws}==={ws}
     fputs(yytext, filtered_template);
 }
 
-<METADATA>(.)*|[\n]                 ;
+<METADATA>(.)*|[\n\r]                ;
 
 [\n\t\r]    fputs(yytext, filtered_template);
 
 (.)*        fputs(yytext, filtered_template);
 
 <<EOF>>     {
+    debug_info_metadata();
     fclose(filtered_template);
     g_hash_table_foreach(hash_table_metadata, (GHFunc) metadata_update_values_in_template, filtered_template_path);
     yyterminate();
@@ -64,20 +66,6 @@ void metadata_init(char* project) {
     g_hash_table_insert(hash_table_metadata, "name", project);
 }
 
-char *trim_whitespace(char *text) {
-    int i = 0;
-    int f = strlen(text);
-
-    // trim inicial white space
-    while (text[i] == ' ' || text[i] == '\t') i++;
-
-    // trim final white space
-    while (text[f - 1] == ' ' || text[i] == '\t') f--;
-    text[f] = '\0';
-
-    return strdup(text + i);
-}
-
 void metadata_add(char *text) {
     char *var_name;
     char *var_value;
@@ -98,3 +86,11 @@ char *metadata_get(const char *variable) {
     return g_hash_table_lookup(hash_table_metadata, variable);
 }
 
+void showHashTableEntry(gpointer key, gpointer value, gpointer user_data) {
+    printf("%s: <>%s<>\n", (char*) key, (char*) value);
+}
+
+void debug_info_metadata() {
+    g_hash_table_foreach(hash_table_metadata, (GHFunc) showHashTableEntry, NULL);
+    print_separator();
+}
