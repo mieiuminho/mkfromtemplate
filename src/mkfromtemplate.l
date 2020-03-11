@@ -79,6 +79,12 @@ int main(int argc, char** argv) {
 
     /* ---------------- */
 
+    dup2(open(filtered_template_path, O_RDONLY), 0);
+    print_title("CONTENT");
+    contentlex();
+
+    /* ---------------- */
+
     printf("FIM DO PROGRAMA (mkfromtemplate.l)\n");
 
     return 0;

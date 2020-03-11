@@ -40,7 +40,7 @@ char* trim_whitespace(char* text) {
     while (text[i] == ' ' || text[i] == '\t') i++;
 
     // trim final white space
-    while (text[f - 1] == ' ' || text[f - 1] == '\t') f--;
+    while (text[f - 1] == ' ' || text[f - 1] == '\t' || text[f - 1] == '\n') f--;
     text[f] = '\0';
 
     return strdup(text + i);
