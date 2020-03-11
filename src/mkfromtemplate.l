@@ -43,9 +43,13 @@ int parse_arguments(int argc, char** argv) {
         }
 
     if (optind < argc) project_name = argv[optind++];
+    else {
+        fprintf(stderr, "Provide a name for the project.\n");
+        return 1;
+    } 
 
     for (; optind < argc; optind++)
-        printf("Non-option argument %s\n", argv[optind]);
+        fprintf("Non-option argument %s\n", argv[optind]);
 
     return 0;
 }
@@ -53,7 +57,6 @@ int parse_arguments(int argc, char** argv) {
 int main(int argc, char** argv) {
     /* defaults */
     template_file = "templates/flex.tmpl";
-    project_name = "flexample";
 
     if (parse_arguments(argc, argv) != 0) {
         return 1;

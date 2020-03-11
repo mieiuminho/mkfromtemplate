@@ -6,12 +6,13 @@
 void find_and_replace_in_file(char* variable, char* value, char* file_path) {
     char command[256];
 
-    snprintf(command, sizeof(command), "sed -i 's/%s/%s/g' %s", variable, value, file_path);
+    snprintf(command, sizeof(command), "sed -i 's/%s/%s/g' %s", variable, value,
+             file_path);
 
     system(command);
 }
 
-char* trim_whitespace(char *text) {
+char* trim_whitespace(char* text) {
     int i = 0;
     int f = strlen(text);
 
