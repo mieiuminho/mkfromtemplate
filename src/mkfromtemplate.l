@@ -62,30 +62,17 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    printf("##################\n");
-
     metadata_init(project_name);
     file_tree_init(project_name);
 
     dup2(open(template_file, O_RDONLY), 0);
-    print_title("METADATA");
     metalex();
 
-    /* ---------------- */
-
     dup2(open(filtered_template_path, O_RDONLY), 0);
-    print_title("TREE");
     treelex();
 
-    /* ---------------- */
-
     dup2(open(filtered_template_path, O_RDONLY), 0);
-    print_title("CONTENT");
     contentlex();
-
-    /* ---------------- */
-
-    printf("FIM DO PROGRAMA (mkfromtemplate.l)\n");
 
     return 0;
 }

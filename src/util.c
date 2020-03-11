@@ -45,13 +45,3 @@ char* trim_whitespace(char* text) {
 
     return strdup(text + i);
 }
-
-void print_separator() {
-    puts("====================================================");
-}
-
-void print_title(char* title) {
-    print_separator();
-    puts(title);
-    print_separator();
-}

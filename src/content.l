@@ -26,10 +26,11 @@ SEPARATOR       ^{ws}==={ws}
 {SEPARATOR}{full_filename}{ws}\n    {
     BEGIN INSIDE_FILE;
     char* file_path;
+
     if(current_file != NULL) {
         fclose(current_file);
     }
-    printf("%s\n", yytext);
+
     file_path = trim_whitespace(yytext);
     file_path = file_path + 3;
     file_path = trim_whitespace(file_path);
@@ -40,13 +41,11 @@ SEPARATOR       ^{ws}==={ws}
     strcat(dir, "/");
 
     prepend(file_path, dir);
-    printf("File: <>%s<>\n", file_path);
     current_file = fopen(file_path, "w+");
 }
 
 <INSIDE_FILE>(.)*|\n                {
     fprintf(current_file, "%s", yytext);
-    printf("redirect to file>%s\n", yytext);
 }
 
 (.)*|\n                             ;
@@ -56,4 +55,3 @@ SEPARATOR       ^{ws}==={ws}
 }
 
 %%
-

@@ -106,13 +106,10 @@ char* get_full_path(GNode *node) {
 gboolean create_tree_entry(GNode *node, gpointer data) {
 
     if(G_NODE_IS_ROOT(node)) {
-        printf("ROOT: <>%s<>\n", (char*) node->data);
         create_directory(node->data);
     } else if (is_directory(node->data)) {
-        printf("Directory: <>%s<>\n", (char*) node->data);
         create_directory(get_full_path(node));
     } else {
-        printf("File: <>%s<>\n", (char*) node->data);
         fclose(fopen(get_full_path(node), "w"));
     }
 
@@ -128,5 +125,4 @@ void create_file_tree() {
         create_tree_entry,
         NULL
     );
-    print_separator();
 }

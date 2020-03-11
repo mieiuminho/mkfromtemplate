@@ -13,7 +13,6 @@ GHashTable* hash_table_metadata;
 FILE* filtered_template;
 
 void metadata_update_values_in_template(char* variable, char* value, char* file_path);
-void debug_info_metadata();
 %}
 
 %x METADATA
@@ -43,7 +42,6 @@ SEPARATOR       ^{ws}==={ws}
 (.)*        fputs(yytext, filtered_template);
 
 <<EOF>>     {
-    debug_info_metadata();
     fclose(filtered_template);
     g_hash_table_foreach(hash_table_metadata, (GHFunc) metadata_update_values_in_template, filtered_template_path);
     yyterminate();
@@ -89,9 +87,4 @@ char *metadata_get(const char *variable) {
 
 void showHashTableEntry(gpointer key, gpointer value, gpointer user_data) {
     printf("%s: <>%s<>\n", (char*) key, (char*) value);
-}
-
-void debug_info_metadata() {
-    g_hash_table_foreach(hash_table_metadata, (GHFunc) showHashTableEntry, NULL);
-    print_separator();
 }
