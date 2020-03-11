@@ -49,7 +49,7 @@ int parse_arguments(int argc, char** argv) {
     } 
 
     for (; optind < argc; optind++)
-        fprintf("Non-option argument %s\n", argv[optind]);
+        fprintf(stderr, "Non-option argument %s\n", argv[optind]);
 
     return 0;
 }

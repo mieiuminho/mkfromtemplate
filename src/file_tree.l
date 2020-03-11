@@ -12,7 +12,8 @@
 GNode* nary_file_tree;
 int current_tree_level;
 
-void debug_info_file_tree();
+int file_tree_insert(char* entry, int level);
+void create_file_tree();
 %}
 
 %s TREE
@@ -30,7 +31,7 @@ SEPARATOR       ^{ws}==={ws}
 {SEPARATOR}tree                     BEGIN TREE;
 
 <TREE>[-]+{ws}{filename}[/]?{ws}    {
-    /* Remove dash and spaces (-) from string */
+    /* Remove dashs and spaces from string */
     int i = 0;
     while(i < yyleng) {
         if (yytext[i] != '-') break;
@@ -38,31 +39,12 @@ SEPARATOR       ^{ws}==={ws}
     }
     char* entry = trim_whitespace(yytext + i);
 
-    if ((i - current_tree_level) > 1) {
-        printf("ERROR ON TEMPLATE TREE\n");
-        printf("ERROR ON LINE: %s", yytext);
-        exit(1);
-    }
-
-    if((i - current_tree_level) <= -1) {
-        while((i - current_tree_level) != 0 && nary_file_tree->parent != NULL) {
-            nary_file_tree = nary_file_tree->parent;
-            i++;
-        }
-    }
-
-    if ((i - current_tree_level) == 1) {
-        nary_file_tree = g_node_last_child(nary_file_tree);
-    }
-
-    g_node_append_data(nary_file_tree, entry);
-
-    current_tree_level = i;
+    current_tree_level = file_tree_insert(entry, i);
 }
 
 <TREE>{SEPARATOR}{qname}            {
-    debug_info_file_tree();
-     yyterminate();
+    create_file_tree();
+    yyterminate();
 }
 
 [ \t\n\r]                           ;
@@ -79,28 +61,71 @@ void file_tree_init(char* project) {
     current_tree_level = 1;
 }
 
-int isDirectory(char* entry) {
+int file_tree_insert(char* entry, int level) {
+    if ((level - current_tree_level) == 1) {
+        nary_file_tree = g_node_last_child(nary_file_tree);
+    }
+
+    if ((level - current_tree_level) > 1) {
+        fprintf(stderr, "ERROR ON TEMPLATE TREE\n");
+        fprintf(stderr, "ERROR ON LINE: %s", yytext);
+        exit(1);
+    }
+
+    if((level - current_tree_level) < 0) {
+        int j = level;
+        while((j - current_tree_level) != 0 && nary_file_tree->parent != NULL) {
+            nary_file_tree = nary_file_tree->parent;
+            j++;
+        }
+    }
+
+    g_node_append_data(nary_file_tree, entry);
+
+    return level;
+}
+
+int is_directory(char* entry) {
     return entry[strlen(entry) - 1] == '/';
 }
 
-gboolean showTreeEntry(GNode *node, gpointer data) {
+char* get_full_path(GNode *node) {
+    GNode *pointer = node;
+    char* full_path = malloc(2048 * sizeof(char));
+
+    strcpy(full_path, pointer->data);
+
+    while(pointer->parent != NULL) {
+        pointer = pointer->parent;
+        prepend(full_path, pointer->data);
+    }
+
+    return full_path;
+}
+
+gboolean create_tree_entry(GNode *node, gpointer data) {
+
     if(G_NODE_IS_ROOT(node)) {
         printf("ROOT: <>%s<>\n", (char*) node->data);
-    } else if (isDirectory(node->data)) {
+        create_directory(node->data);
+    } else if (is_directory(node->data)) {
         printf("Directory: <>%s<>\n", (char*) node->data);
+        create_directory(get_full_path(node));
     } else {
         printf("File: <>%s<>\n", (char*) node->data);
+        fclose(fopen(get_full_path(node), "w"));
     }
+
     return FALSE;
 }
 
-void debug_info_file_tree() {
+void create_file_tree() {
     g_node_traverse(
         nary_file_tree,
         G_PRE_ORDER,
         G_TRAVERSE_ALL,
         -1,
-        showTreeEntry,
+        create_tree_entry,
         NULL
     );
     print_separator();

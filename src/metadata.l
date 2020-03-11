@@ -58,7 +58,8 @@ void metadata_update_values_in_template(char* variable, char* value, char* file_
 
 void metadata_init(char* project) {
     filtered_template_path = "/tmp/.filtered_template";
-    filtered_template = fopen(filtered_template_path,"w");
+    filtered_template = fopen(filtered_template_path, "w");
+
     if (hash_table_metadata == NULL) {
         hash_table_metadata = g_hash_table_new(g_str_hash, g_str_equal);
     }
