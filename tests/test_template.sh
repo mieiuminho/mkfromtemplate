@@ -44,4 +44,4 @@ done
 
 project=$@
 
-./bin/mkfromtemplate "$project" -t "$template_file"
+./bin/mkfromtemplate -t "$template_file" "$project"

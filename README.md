@@ -27,7 +27,7 @@ The following software is required to be installed on your system:
 
 ### :hammer: Development
 
-Compile the program.
+Compile the program. If it's the first time you need to run the command twice.
 
 ```
 make build

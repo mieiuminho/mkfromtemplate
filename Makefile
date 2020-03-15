@@ -2,7 +2,7 @@ CC      = gcc
 LD      = gcc
 CFLAGS  = -O2 -Wall -Wextra
 CFLAGS += -Wno-unused-parameter -Wno-unused-function -Wno-unused-result
-LIBS    = `pkg-config --cflags --libs glib-2.0` -lfl
+LIBS    = `pkg-config --cflags --libs glib-2.0`
 INCLDS  = -I $(INC_DIR)
 BIN_DIR = bin
 BLD_DIR = build
@@ -18,8 +18,6 @@ LEX     = $(wildcard $(SRC_DIR)/*.l)
 CLEX    = $(patsubst $(SRC_DIR)/%.l,$(OUT_DIR)/%.c,$(LEX))
 OBJS    = $(patsubst $(SRC_DIR)/%.c,$(BLD_DIR)/%.o,$(SRC))
 OBJS   += $(patsubst $(OUT_DIR)/%.c,$(BLD_DIR)/%.o,$(wildcard $(OUT_DIR)/*.c))
-DEPS    = $(patsubst $(BLD_DIR)/%.o,$(BLD_DIR)/%.d,$(OBJS))
-DEPS   += $(patsubst $(BLD_DIR)/%.o,$(BLD_DIR)/%.d,$(OBJS))
 PROGRAM = mkfromtemplate
 
 vpath %.c $(SRC_DIR) $(OUT_DIR)
@@ -31,13 +29,11 @@ vpath %.c $(SRC_DIR) $(OUT_DIR)
 $(OUT_DIR)/%.c: $(SRC_DIR)/%.l
 	flex -o $@ $<
 
-$(BLD_DIR)/%.d: %.c
-	$(CC) -M $(INCLDS) $(CFLAGS) $(LIBS) $< -o $@
-
+$(BLD_DIR)/%.o: LIBS += -lfl
 $(BLD_DIR)/%.o: %.c
 	$(CC) -c $(INCLDS) $(CFLAGS) $(LIBS) $< -o $@
 
-$(BIN_DIR)/$(PROGRAM): $(CLEX) $(DEPS) $(OBJS)
+$(BIN_DIR)/$(PROGRAM): $(CLEX) $(OBJS)
 	$(CC) $(INCLDS) $(LIBS) $(OBJS) -o $@
 
 build: setup $(BIN_DIR)/$(PROGRAM)
@@ -77,4 +73,3 @@ clean:
 		$(DOC_DIR)/html $(DOC_DIR)/latex
 	@echo ""
 	@echo "...✓ done!"
-

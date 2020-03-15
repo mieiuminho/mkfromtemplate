@@ -1,10 +1,10 @@
 %option noyywrap prefix="tree"
 
 %{
+#include "filetree.h"
+
 #include <glib.h>
 #include <gmodule.h>
-
-#include "file_tree.h"
 
 #include "global.h"
 #include "util.h"
@@ -12,8 +12,8 @@
 GNode* nary_file_tree;
 int current_tree_level;
 
-int file_tree_insert(char* entry, int level);
-void create_file_tree();
+int filetree_insert(char* entry, int level);
+void create_filetree();
 %}
 
 %s TREE
@@ -39,11 +39,11 @@ SEPARATOR       ^{ws}==={ws}
     }
     char* entry = trim_whitespace(yytext + i);
 
-    current_tree_level = file_tree_insert(entry, i);
+    current_tree_level = filetree_insert(entry, i);
 }
 
 <TREE>{SEPARATOR}{qname}            {
-    create_file_tree();
+    create_filetree();
     yyterminate();
 }
 
@@ -53,7 +53,7 @@ SEPARATOR       ^{ws}==={ws}
 
 %%
 
-void file_tree_init(char* project) {
+void filetree_init(char* project) {
     char* dir = strdup(project);
     realloc(dir, strlen(project) + 2);
     strcat(dir, "/");
@@ -61,7 +61,7 @@ void file_tree_init(char* project) {
     current_tree_level = 1;
 }
 
-int file_tree_insert(char* entry, int level) {
+int filetree_insert(char* entry, int level) {
     if ((level - current_tree_level) == 1) {
         nary_file_tree = g_node_last_child(nary_file_tree);
     }
@@ -103,7 +103,7 @@ char* get_full_path(GNode *node) {
     return full_path;
 }
 
-gboolean create_tree_entry(GNode *node, gpointer data) {
+gboolean create_filetree_entry(GNode *node, gpointer data) {
 
     if(G_NODE_IS_ROOT(node)) {
         create_directory(node->data);
@@ -116,13 +116,13 @@ gboolean create_tree_entry(GNode *node, gpointer data) {
     return FALSE;
 }
 
-void create_file_tree() {
+void create_filetree() {
     g_node_traverse(
         nary_file_tree,
         G_PRE_ORDER,
         G_TRAVERSE_ALL,
         -1,
-        create_tree_entry,
+        create_filetree_entry,
         NULL
     );
 }

@@ -1,6 +1,8 @@
 %option noyywrap prefix="content"
 
 %{
+#include "content.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -20,8 +22,8 @@ SEPARATOR       ^{ws}==={ws}
 %%
 
                                     BEGIN 0;
-{SEPARATOR}tree{ws}                 BEGIN 0;
-{SEPARATOR}meta{ws}                 BEGIN 0;
+{SEPARATOR}tree{ws}\n               BEGIN 0;
+{SEPARATOR}meta{ws}\n               BEGIN 0;
 
 {SEPARATOR}{full_filename}{ws}\n    {
     BEGIN INSIDE_FILE;
