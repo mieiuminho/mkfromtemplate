@@ -4,31 +4,33 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "filetree.h"
 #include "global.h"
+#include "metadata.h"
 #include "util.h"
 
-#include "metadata.h"
-#include "filetree.h"
+extern int metalex();
+extern int treelex();
+extern int contentlex();
 
 const char *argp_program_version = "mkfromtemplate 0.1.0";
 
 /* Program documentation. */
 static char doc[] =
-    "mkfromtemplate -- a program to do the initial setup of projects from templates";
+    "mkfromtemplate -- a program to do the initial setup of projects from "
+    "templates";
 
 /* A description of the arguments we accept. */
 static char args_doc[] = "<PROJECT NAME>";
 
 /* The options we understand. */
 static struct argp_option options[] = {
-  {"template", 't', "FILE",  0, "The template file to use parse"},
-  { 0 }
-};
+    {"template", 't', "FILE", 0, "The template file to use parse"}, {0}};
 
 /* Used by main to communicate with parse_opt. */
 struct arguments {
-    char* project;  // name of the project
-    char* template_file;
+    char *project;  // name of the project
+    char *template_file;
 };
 
 /* Parse a single option. */
@@ -67,26 +69,26 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 /* Our argp parser. */
 static struct argp argp = {options, parse_opt, args_doc, doc};
 
-int main (int argc, char *argv[]) {
-  struct arguments arguments;
+int main(int argc, char *argv[]) {
+    struct arguments arguments;
 
-  /* default values */
-  arguments.template_file = "templates/flex.tmpl";
+    /* default values */
+    arguments.template_file = "templates/flex.tmpl";
 
-  argp_parse(&argp, argc, argv, 0, 0, &arguments);
+    argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
-  project_name = strdup(arguments.project);
-  metadata_init(project_name);
-  filetree_init(project_name);
+    project_name = strdup(arguments.project);
+    metadata_init(project_name);
+    filetree_init(project_name);
 
-  dup2(open(arguments.template_file, O_RDONLY), 0);
-  metalex();
+    dup2(open(arguments.template_file, O_RDONLY), 0);
+    metalex();
 
-  dup2(open(filtered_template_path, O_RDONLY), 0);
-  treelex();
+    dup2(open(filtered_template_path, O_RDONLY), 0);
+    treelex();
 
-  dup2(open(filtered_template_path, O_RDONLY), 0);
-  contentlex();
+    dup2(open(filtered_template_path, O_RDONLY), 0);
+    contentlex();
 
-  return 0;
+    return 0;
 }

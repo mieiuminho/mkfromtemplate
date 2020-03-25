@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-. tests/helpers.sh
+# shellcheck source=scripts/helpers.sh
+. scripts/helpers.sh
 
 show_help() {
   cat <<EOF
@@ -42,6 +43,6 @@ while [[ $1 == -* ]]; do
   esac
 done
 
-project=$@
+project=$1
 
 ./bin/mkfromtemplate -t "$template_file" "$project"

@@ -29,7 +29,7 @@ SEPARATOR       ^{ws}==={ws}
     BEGIN INSIDE_FILE;
     char* file_path;
 
-    if(current_file != NULL) {
+    if (current_file != NULL) {
         fclose(current_file);
     }
 

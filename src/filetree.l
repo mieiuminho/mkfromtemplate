@@ -95,7 +95,7 @@ char* get_full_path(GNode *node) {
 
     strcpy(full_path, pointer->data);
 
-    while(pointer->parent != NULL) {
+    while (pointer->parent != NULL) {
         pointer = pointer->parent;
         prepend(full_path, pointer->data);
     }
@@ -103,9 +103,9 @@ char* get_full_path(GNode *node) {
     return full_path;
 }
 
-gboolean create_filetree_entry(GNode *node, gpointer data) {
+gboolean create_filetree_entry(GNode* node, gpointer data) {
 
-    if(G_NODE_IS_ROOT(node)) {
+    if (G_NODE_IS_ROOT(node)) {
         create_directory(node->data);
     } else if (is_directory(node->data)) {
         create_directory(get_full_path(node));
