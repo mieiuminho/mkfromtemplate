@@ -5,6 +5,8 @@
  *
  */
 
+#define _GNU_SOURCE
+
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,21 +23,29 @@ void create_directory(const char* pathname) {
     }
 }
 
-/* Prepends text into string. Assumes s has enough space allocated
-** for the combined string.
-*/
-void prepend(char* string, const char* text) {
-    size_t len = strlen(text);
-    memmove(string + len, string, strlen(string) + 1);
-    memcpy(string, text, len);
+/**
+ * @brief Prependes pre_text to text
+ *
+ * @details This function creates a string with enough space for pre_text and
+ * pre_text together. If this returned string is not needed anymore it should
+ * be deallocated.
+ *
+ * @param text string to preattach some text
+ * @param pre_text what to attach to text
+ * @return the result of pre_text + text
+ */
+char* string_prepend(char* text, const char* pre_text) {
+    size_t pre_text_len = strlen(pre_text);
+    size_t text_len = strlen(text);
+    char* result = malloc(sizeof(char) * (pre_text_len + text_len + 1));
+    memcpy(result, pre_text, pre_text_len);
+    memcpy(result + pre_text_len, text, text_len + 1);
+    return result;
 }
 
 void find_and_replace_in_file(char* variable, char* value, char* file_path) {
-    char command[256];
-
-    snprintf(command, sizeof(command), "sed -i 's/%s/%s/g' %s", variable, value,
-             file_path);
-
+    char* command;
+    asprintf(&command, "sed -i 's/%s/%s/g' %s", variable, value, file_path);
     system(command);
 }
 

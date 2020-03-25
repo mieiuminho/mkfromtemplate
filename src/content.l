@@ -36,13 +36,13 @@ SEPARATOR       ^{ws}==={ws}
     file_path = trim_whitespace(yytext);
     file_path = file_path + 3;
     file_path = trim_whitespace(file_path);
-    file_path = realloc(file_path, strlen(file_path) + 32);
 
     char* dir = strdup(project_name);
     realloc(dir, strlen(project_name) + 2);
     strcat(dir, "/");
 
-    prepend(file_path, dir);
+    file_path = string_prepend(file_path, dir);
+    free(dir);
     current_file = fopen(file_path, "w+");
 }
 

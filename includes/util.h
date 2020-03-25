@@ -3,7 +3,7 @@
 
 void create_directory(const char* pathname);
 
-void prepend(char* string, const char* text);
+char* string_prepend(char* text, const char* pre_text);
 
 void find_and_replace_in_file(char* variable, char* value, char* file_path);
 

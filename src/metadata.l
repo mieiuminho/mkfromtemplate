@@ -1,10 +1,14 @@
 %option noyywrap prefix="meta"
 
 %{
+#include "metadata.h"
+
 #include <glib.h>
 #include <gmodule.h>
-
-#include "metadata.h"
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "global.h"
 #include "util.h"
@@ -49,8 +53,8 @@ SEPARATOR       ^{ws}==={ws}
 %%
 
 void metadata_update_values_in_template(char* variable, char* value, char* file_path) {
-    char markup_variable[32];
-    snprintf(markup_variable, sizeof(markup_variable), "{%%%s%%}", variable);
+    char* markup_variable;
+    asprintf(&markup_variable, "{%%%s%%}", variable);
     find_and_replace_in_file(markup_variable, value, file_path);
 }
 
@@ -83,8 +87,4 @@ void metadata_add(char *text) {
 
 char *metadata_get(const char *variable) {
     return g_hash_table_lookup(hash_table_metadata, variable);
-}
-
-void showHashTableEntry(gpointer key, gpointer value, gpointer user_data) {
-    printf("%s: <>%s<>\n", (char*) key, (char*) value);
 }

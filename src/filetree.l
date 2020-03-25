@@ -90,14 +90,13 @@ int is_directory(char* entry) {
 }
 
 char* get_full_path(GNode *node) {
-    GNode *pointer = node;
-    char* full_path = malloc(2048 * sizeof(char));
+    GNode* pointer = node;
 
-    strcpy(full_path, pointer->data);
+    char* full_path = strdup(pointer->data);
 
     while (pointer->parent != NULL) {
         pointer = pointer->parent;
-        prepend(full_path, pointer->data);
+        full_path = string_prepend(full_path, pointer->data);
     }
 
     return full_path;
