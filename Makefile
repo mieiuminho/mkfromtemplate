@@ -50,7 +50,6 @@ $(BLD_DIR)/%.o: %.c
 	$(CC) -c $(INCLDS) $(CFLAGS) $(LIBS) $< -o $@
 	$(call show,,reset)
 
-
 $(BIN_DIR)/$(PROGRAM): $(CLEX) $(OBJS)
 	$(CC) $(INCLDS) $(LIBS) $(OBJS) -o $@
 

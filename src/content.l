@@ -10,6 +10,7 @@
 #include "util.h"
 
 FILE* current_file = NULL;
+char* root_dir;
 %}
 
 d               [0-9]
@@ -33,16 +34,9 @@ SEPARATOR       ^{ws}==={ws}
         fclose(current_file);
     }
 
-    file_path = trim_whitespace(yytext);
-    file_path = file_path + 3;
-    file_path = trim_whitespace(file_path);
+    file_path = trim_whitespace(trim_whitespace(yytext) + 3);
+    file_path = string_prepend(file_path, root_dir);
 
-    char* dir = strdup(project_name);
-    realloc(dir, strlen(project_name) + 2);
-    strcat(dir, "/");
-
-    file_path = string_prepend(file_path, dir);
-    free(dir);
     current_file = fopen(file_path, "w+");
 }
 
@@ -57,3 +51,7 @@ SEPARATOR       ^{ws}==={ws}
 }
 
 %%
+
+void content_init(const char* project_path) {
+    root_dir = string_append(project_path, "/");
+}

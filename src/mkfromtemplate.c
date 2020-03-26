@@ -5,6 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "content.h"
 #include "filetree.h"
 #include "global.h"
 #include "metadata.h"
@@ -30,7 +31,7 @@ static struct argp_option options[] = {
 
 /* Used by main to communicate with parse_opt. */
 struct arguments {
-    char *project;  // name of the project
+    char *project_name;
     char *template_file;
 };
 
@@ -50,7 +51,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
                 /* Too many arguments. */
                 argp_usage(state);
             }
-            arguments->project = arg;
+            arguments->project_name = arg;
             break;
 
         case ARGP_KEY_END:
@@ -78,17 +79,21 @@ int main(int argc, char *argv[]) {
 
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
-    project_name = strdup(arguments.project);
-    metadata_init(project_name);
-    filetree_init(project_name);
+    char *tmp_template_file = "/tmp/.mkfrom.tmpl";
+    copy_file_to(arguments.template_file, tmp_template_file);
 
-    dup2(open(arguments.template_file, O_RDONLY), 0);
+    metadata_init(arguments.project_name);
+    dup2(open(tmp_template_file, O_RDONLY), 0);
     metalex();
+    metadata_replace_values_in_template(tmp_template_file);
 
-    dup2(open(filtered_template_path, O_RDONLY), 0);
+    filetree_init(arguments.project_name);
+    dup2(open(tmp_template_file, O_RDONLY), 0);
     treelex();
+    create_filetree();
 
-    dup2(open(filtered_template_path, O_RDONLY), 0);
+    content_init(arguments.project_name);
+    dup2(open(tmp_template_file, O_RDONLY), 0);
     contentlex();
 
     return 0;
