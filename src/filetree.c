@@ -17,11 +17,16 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-GNode* nary_file_tree;
-int current_tree_level;
+static GNode* nary_file_tree;
+static int current_tree_level;
 
 void filetree_init(char* project_path) {
-    char* root_dir = string_append(project_path, "/");
+    char* root_dir = strdup(project_path);
+
+    if (get_last_char(root_dir) != '/') {
+        root_dir = string_append(root_dir, "/");
+    }
+
     nary_file_tree = g_node_new(root_dir);
     current_tree_level = 1;
 }

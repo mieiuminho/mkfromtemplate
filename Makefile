@@ -73,7 +73,7 @@ doc:
 	@doxygen $(DOC_DIR)/Doxyfile
 
 test: build
-	@./$(TST_DIR)/test_template.sh -t $(TPL_DIR)/flex.tmpl flexample
+	@./$(TST_DIR)/test_template.sh -o $(OUT_DIR)/nome_da_pasta -t $(TPL_DIR)/flex.tmpl flexample
 
 setup:
 	@mkdir -p $(BIN_DIR)

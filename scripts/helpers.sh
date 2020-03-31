@@ -1,18 +1,15 @@
 #!/bin/bash
 
 function echo_error() {
-  printf '\n\033[31mERROR:\033[0m %s\n' "$1"
-  echo "$@"
+  printf '\033[31mERROR:\033[0m %s\n' "$@"
 }
 
 function echo_warning() {
-  printf '\n\033[33mWARNING:\033[0m %s\n' "$1"
-  echo "$@"
+  printf '\033[33mWARNING:\033[0m %s\n' "$@"
 }
 
 function echo_done() {
-  printf '\n\033[32mDONE:\033[0m %s\n' "$1"
-  echo "$@"
+  printf '\033[32mDONE:\033[0m %s\n' "$@"
 }
 
 function echo_info() {

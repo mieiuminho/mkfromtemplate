@@ -9,7 +9,7 @@ USAGE:
         test_template [OPTIONS] <PROGRAM>
 
 EXAMPLE:
-        ./tests/test_template -t 'templates/flex.tmpl' flexample
+        ./tests/test_template -t 'templates/flex.tmpl' -o 'out/flexamples/' flexample
 
 OPTIONS:
         -h, --help              Display this help message.
@@ -24,13 +24,24 @@ while [[ $1 == -* ]]; do
     show_help
     exit 0
     ;;
-  -t) if (($# > 1)); then
-    template_file=$2
-    shift 2
-  else
-    echo "-t requires an argument" 1>&2
-    exit 1
-  fi ;;
+  -t)
+    if (($# > 1)); then
+      template_file=$2
+      shift 2
+    else
+      echo "-t requires an argument" 1>&2
+      exit 1
+    fi
+    ;;
+  -o)
+    if (($# > 1)); then
+      output_dir=$2
+      shift 2
+    else
+      echo "-o requires an argument" 1>&2
+      exit 1
+    fi
+    ;;
   --)
     shift
     break
@@ -45,4 +56,15 @@ done
 
 project=$1
 
-./bin/mkfromtemplate -t "$template_file" "$project"
+rm -rf "$output_dir"
+
+./bin/mkfromtemplate -o "$output_dir" -t "$template_file" "$project"
+
+expected_output_file="$(dirname $0)/$(basename $template_file).tree"
+
+if test "$(tree $output_dir | tail -n +2)" = "$(cat $expected_output_file)"; then
+  echo_done "Test for template ${template_file} passed"
+else
+  echo_error "Test for template ${template_file} failed"
+  diff <(tree $output_dir | tail -n +2) <(cat $expected_output_file) --color=always
+fi

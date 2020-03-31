@@ -27,12 +27,15 @@ static char args_doc[] = "<PROJECT NAME>";
 
 /* The options we understand. */
 static struct argp_option options[] = {
-    {"template", 't', "FILE", 0, "The template file to use parse"}, {0}};
+    {"template", 't', "<FILE>", 0, "The template file to use parse"},
+    {"output", 'o', "<OUTPUT_DIR>", 0, "Where should the project be created"},
+    {0}};
 
 /* Used by main to communicate with parse_opt. */
 struct arguments {
     char *project_name;
     char *template_file;
+    char *output_dir;
 };
 
 /* Parse a single option. */
@@ -44,6 +47,10 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
     switch (key) {
         case 't':
             arguments->template_file = arg;
+            break;
+
+        case 'o':
+            arguments->output_dir = arg;
             break;
 
         case ARGP_KEY_ARG:
@@ -76,6 +83,7 @@ int main(int argc, char *argv[]) {
 
     /* default values */
     arguments.template_file = "templates/flex.tmpl";
+    arguments.output_dir = NULL;
 
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
@@ -87,12 +95,16 @@ int main(int argc, char *argv[]) {
     metalex();
     metadata_replace_values_in_template(tmp_template_file);
 
-    filetree_init(arguments.project_name);
+    if (arguments.output_dir == NULL) {
+        arguments.output_dir = strdup(arguments.project_name);
+    }
+
+    filetree_init(arguments.output_dir);
     dup2(open(tmp_template_file, O_RDONLY), 0);
     treelex();
     create_filetree();
 
-    content_init(arguments.project_name);
+    content_init(arguments.output_dir);
     dup2(open(tmp_template_file, O_RDONLY), 0);
     contentlex();
 

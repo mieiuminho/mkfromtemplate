@@ -53,5 +53,9 @@ SEPARATOR       ^{ws}==={ws}
 %%
 
 void content_init(const char* project_path) {
-    root_dir = string_append(project_path, "/");
+    root_dir = strdup(project_path);
+
+    if(get_last_char(root_dir) != '/') {
+        root_dir = string_append(root_dir, "/");
+    }
 }
