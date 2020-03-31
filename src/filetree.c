@@ -50,7 +50,7 @@ void filetree_insert(char* entry, int level) {
     current_tree_level = level;
 }
 
-int is_directory(char* entry) { return entry[strlen(entry) - 1] == '/'; }
+int is_directory(const char* entry) { return get_last_char(entry) == '/'; }
 
 char* get_full_path(GNode* node) {
     GNode* pointer = node;

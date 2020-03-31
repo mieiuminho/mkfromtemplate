@@ -66,6 +66,8 @@ char* string_append(const char* text, const char* pos_text) {
     return string_prepend(pos_text, text);
 }
 
+char get_last_char(const char* string) { return string[strlen(string) - 1]; }
+
 void find_and_replace_in_file(char* variable, char* value, char* file_path) {
     char* command;
     asprintf(&command, "sed -i 's/%s/%s/g' %s", variable, value, file_path);
