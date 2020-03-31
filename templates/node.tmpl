@@ -1,0 +1,47 @@
+=== meta
+
+author: Ned Stark
+email: ned@winterfell.org
+version: 0.1.0
+license: MIT
+
+=== tree
+
+- lib/
+-- index.js
+- README
+- package.json
+
+=== package.json
+{
+  "name": "{%name%}",
+  "version": "{%version%}",
+  "description": "A nodeJS example",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "{%author%}",
+  "license": "{%license%}"
+}
+=== lib/index.js
+#!/usr/bin/env node
+
+console.log("Hello from " + '{%author%}'.split(' ')[0] + "!")
+
+=== README
+# NAME
+
+{%name%} - awesome nodeJS package  ...FIXME
+
+## Synopsis
+
+   {%name%} args*
+
+## Description
+
+## See also
+
+## Author
+
+Comments and bug reports to {%author%}, {%email%}.
