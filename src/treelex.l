@@ -16,7 +16,7 @@
 d               [0-9]
 ws              [ \t]*
 qname           [a-zA-Z][a-zA-Z0-9_\-]*
-filename        [a-zA-Z0-9][a-zA-Z0-9_\-\.]*
+filename        [a-zA-Z0-9\._][a-zA-Z0-9_\-\.]*
 SEPARATOR       ^{ws}==={ws}
 
 %%

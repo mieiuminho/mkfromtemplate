@@ -15,7 +15,7 @@ char* root_dir;
 
 d               [0-9]
 ws              [ \t]*
-full_filename   [a-zA-Z0-9][a-zA-Z0-9_\-\./]*
+full_filename   [a-zA-Z0-9_\.][a-zA-Z0-9_\-\./]*
 SEPARATOR       ^{ws}==={ws}
 
 %s INSIDE_FILE
