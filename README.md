@@ -33,13 +33,7 @@ Compile the program. If it's the first time you need to run the command twice.
 make build
 ```
 
-Run the program.
-
-```
-make run
-```
-
-Running tests.
+Run the tests.
 
 ```
 make test
@@ -70,3 +64,4 @@ make install
 | [![Hugo][hugo-pic]][hugo] | [![Nelson][nelson-pic]][nelson] | [![Pedro][pedro-pic]][pedro] |
 | :-----------------------: | :-----------------------------: | :--------------------------: |
 |   [Hugo Carvalho][hugo]   |    [Nelson Estevão][nelson]     |    [Pedro Ribeiro][pedro]    |
+

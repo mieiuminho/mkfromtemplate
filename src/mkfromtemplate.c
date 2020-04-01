@@ -27,8 +27,9 @@ static char args_doc[] = "<PROJECT NAME>";
 
 /* The options we understand. */
 static struct argp_option options[] = {
-    {"template", 't', "<FILE>", 0, "The template file to use parse"},
-    {"output", 'o', "<OUTPUT_DIR>", 0, "Where should the project be created"},
+    {"template", 't', "<FILE>", 0, "The template file to use parse", 0},
+    {"output", 'o', "<OUTPUT_DIR>", 0, "Where should the project be created",
+     0},
     {0}};
 
 /* Used by main to communicate with parse_opt. */
@@ -76,7 +77,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 }
 
 /* Our argp parser. */
-static struct argp argp = {options, parse_opt, args_doc, doc};
+static struct argp argp = {options, parse_opt, args_doc, doc, NULL, NULL, NULL};
 
 int main(int argc, char *argv[]) {
     struct arguments arguments;

@@ -33,7 +33,7 @@ vpath %.c $(SRC_DIR) $(OUT_DIR)
 
 .DEFAULT_GOAL = build
 
-.PHONY: build setup clean debug doc fmt run test
+.PHONY: build setup clean debug doc fmt lex test
 
 define show
 	@./$(UTI_DIR)/change_output_color.sh $(1) $(2)
@@ -53,10 +53,9 @@ $(BLD_DIR)/%.o: %.c
 $(BIN_DIR)/$(PROGRAM): $(CLEX) $(OBJS)
 	$(CC) $(INCLDS) $(LIBS) $(OBJS) -o $@
 
-build: setup $(BIN_DIR)/$(PROGRAM)
+lex: setup $(CLEX)
 
-run: build
-	@./$(BIN_DIR)/$(PROGRAM)
+build: setup $(BIN_DIR)/$(PROGRAM)
 
 fmt:
 	@echo "C and Headers files:"
