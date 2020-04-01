@@ -74,6 +74,7 @@ doc:
 test: build
 	@./$(TST_DIR)/test_template.sh -o $(OUT_DIR)/nome_da_pasta -t $(TPL_DIR)/flex.tmpl flexample
 	@./$(TST_DIR)/test_template.sh -o $(OUT_DIR)/pastas_nodejs -t $(TPL_DIR)/node.tmpl nodexample
+	@./$(TST_DIR)/test_template.sh -o $(OUT_DIR)/projeto_em_c -t $(TPL_DIR)/c.tmpl cemple
 
 setup:
 	@mkdir -p $(BIN_DIR)
