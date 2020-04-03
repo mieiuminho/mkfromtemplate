@@ -88,6 +88,15 @@ int main(int argc, char *argv[]) {
 
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
 
+    if (arguments.template_file == NULL) {
+        fprintf(stderr, "No template file provided");
+        exit(1);
+    }
+
+    if (arguments.output_dir == NULL) {
+        arguments.output_dir = strdup(arguments.project_name);
+    }
+
     char *tmp_template_file = "/tmp/.mkfrom.tmpl";
     copy_file_to(arguments.template_file, tmp_template_file);
 
@@ -95,10 +104,6 @@ int main(int argc, char *argv[]) {
     dup2(open(tmp_template_file, O_RDONLY), 0);
     metalex();
     metadata_replace_values_in_template(tmp_template_file);
-
-    if (arguments.output_dir == NULL) {
-        arguments.output_dir = strdup(arguments.project_name);
-    }
 
     filetree_init(arguments.output_dir);
     dup2(open(tmp_template_file, O_RDONLY), 0);

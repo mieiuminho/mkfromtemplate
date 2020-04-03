@@ -27,7 +27,7 @@ SEPARATOR       ^{ws}==={ws}
 
                                     BEGIN 0;
 
-{SEPARATOR}meta                     BEGIN METADATA;
+{SEPARATOR}meta{ws}                 BEGIN METADATA;
 
 <METADATA>{qname}\:{ws}(.)+         { metadata_add(yytext); }
 

@@ -23,7 +23,7 @@ SEPARATOR       ^{ws}==={ws}
 
                                     BEGIN 0;
 
-{SEPARATOR}tree                     BEGIN TREE;
+{SEPARATOR}tree{ws}                 BEGIN TREE;
 
 <TREE>[-]+{ws}{filename}[/]?{ws}    {
     /* Remove dashs and spaces from string */
