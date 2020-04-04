@@ -72,7 +72,9 @@ char* get_full_path(GNode* node) {
 
 gboolean create_filetree_entry(GNode* node, gpointer data) {
     if (G_NODE_IS_ROOT(node)) {
-        create_directory(node->data);
+        if (strcmp(node->data, "./")) {
+            create_directory(node->data);
+        }
     } else if (is_directory(node->data)) {
         create_directory(get_full_path(node));
     } else {
