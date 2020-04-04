@@ -60,11 +60,13 @@ rm -rf "$output_dir"
 
 ./bin/mkfromtemplate -o "$output_dir" -t "$template_file" "$project"
 
-expected_output_file="$(dirname $0)/$(basename $template_file).tree"
+expected_output_tree="$(dirname $0)/$(basename $template_file).tree"
+expected_output_blob="$(dirname $0)/$(basename $template_file).blob"
 
-if test "$(tree $output_dir | tail -n +2)" = "$(cat $expected_output_file)"; then
+if test "$(tree $output_dir | tail -n +2)" = "$(cat $expected_output_tree)" && test "$(find $output_dir -type f | xargs cat -v)" = "$(cat -v $expected_output_blob)"; then
   echo_done "Test for template ${template_file} passed"
 else
   echo_error "Test for template ${template_file} failed"
-  diff <(tree $output_dir | tail -n +2) <(cat $expected_output_file) --color=always
+  diff <(tree $output_dir | tail -n +2) <(cat $expected_output_tree) --color=always
+  diff <(find $output_dir -type f | xargs cat -v) <(cat -v $expected_output_blob) --color=always
 fi

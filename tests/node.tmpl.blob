@@ -1,0 +1,30 @@
+{
+  "name": "nodexample",
+  "version": "0.1.0",
+  "description": "A nodeJS example",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ned Stark",
+  "license": "MIT"
+}
+# NAME
+
+nodexample - awesome nodeJS package  ...FIXME
+
+## Synopsis
+
+   nodexample args*
+
+## Description
+
+## See also
+
+## Author
+
+Comments and bug reports to Ned Stark, ned@winterfell.org.
+
+#!/usr/bin/env node
+
+console.log("Hello from " + 'Ned Stark'.split(' ')[0] + "!")

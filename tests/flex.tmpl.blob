@@ -1,0 +1,35 @@
+%option noyywrap yylineno
+%%
+
+%%
+int main(){
+  yylex();
+  return 0;
+}
+# NAME
+
+flexample - o nosso fabuloso filtro ...FIXME
+
+## Synopsis
+
+   flexample file*
+
+## Description
+
+## See also
+
+## Author
+
+Comments and bug reports to J. JoM-CM-#o, jj@di.uminho.pt.
+
+SRC_DIR = src
+
+flexample: $(SRC_DIR)/flexample.fl
+	flex $(SRC_DIR)/flexample.fl
+	cc -o flexample lex.yy.c
+
+install: flexample
+	cp flexample /usr/local/bin/
+
+
+FIXME: descriM-CM-'M-CM-#o sumM-CM-!ria do filtro
