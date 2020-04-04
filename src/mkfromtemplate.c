@@ -8,6 +8,7 @@
 #include "content.h"
 #include "filetree.h"
 #include "global.h"
+#include "ini.h"
 #include "metadata.h"
 #include "util.h"
 
@@ -27,7 +28,9 @@ static char args_doc[] = "<PROJECT NAME>";
 
 /* The options we understand. */
 static struct argp_option options[] = {
+    {"config", 'c', "<CONFIG>", 0, "Configuration to read at program start", 0},
     {"template", 't', "<FILE>", 0, "The template file to use parse", 0},
+    {"debug", 'd', 0, 0, "Output debug information", 0},
     {"output", 'o', "<OUTPUT_DIR>", 0, "Where should the project be created",
      0},
     {0}};
@@ -35,11 +38,13 @@ static struct argp_option options[] = {
 /* Used by main to communicate with parse_opt. */
 struct arguments {
     char *project_name;
+    char *configuration_file;
     char *template_file;
     char *output_dir;
+    int debug;
 };
 
-/* Parse a single option. */
+/* Parse a single argument option. */
 static error_t parse_opt(int key, char *arg, struct argp_state *state) {
     /* Get the input argument from argp_parse, which we
        know is a pointer to our arguments structure. */
@@ -52,6 +57,14 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 
         case 'o':
             arguments->output_dir = arg;
+            break;
+
+        case 'c':
+            arguments->configuration_file = arg;
+            break;
+
+        case 'd':
+            arguments->debug = 1;
             break;
 
         case ARGP_KEY_ARG:
@@ -79,25 +92,74 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state) {
 /* Our argp parser. */
 static struct argp argp = {options, parse_opt, args_doc, doc, NULL, NULL, NULL};
 
-int main(int argc, char *argv[]) {
-    struct arguments arguments;
+struct configuration {
+    const char *templates_path;
+    const char *templates_default;
+};
 
-    /* default values */
-    arguments.template_file = "templates/flex.tmpl";
-    arguments.output_dir = NULL;
+/* Parse a single configuration option. */
+static int handler(void *configuration, const char *section, const char *name,
+                   const char *value) {
+    struct configuration *config = (struct configuration *)configuration;
 
-    argp_parse(&argp, argc, argv, 0, 0, &arguments);
-
-    if (arguments.template_file == NULL) {
-        fprintf(stderr, "No template file provided");
-        exit(1);
+#define MATCH(s, n) strcmp(section, s) == 0 && strcmp(name, n) == 0
+    if (MATCH("templates", "path")) {
+        config->templates_path = strdup(value);
+    } else if (MATCH("templates", "default")) {
+        config->templates_default = strdup(value);
+    } else {
+        /* unknown section/name, error */
+        return 0;
     }
 
+    return 1;
+}
+
+int main(int argc, char *argv[]) {
+    struct arguments arguments;
+    struct configuration configuration;
+
+    /* default values */
+    char *tmp_template_file = "/tmp/.mkfrom.tmpl";
+    arguments.debug = 0;
+    arguments.configuration_file =
+        expand_path("~/.config/mkfromtemplate/config.ini");
+    arguments.template_file = NULL;
+    arguments.output_dir = NULL;
+
+    /* Parse command line arguments */
+    argp_parse(&argp, argc, argv, 0, 0, &arguments);
+
+    /* Parse configuration file */
+    if (ini_parse(arguments.configuration_file, handler, &configuration) < 0) {
+        printf("Can't load '%s'\n", arguments.configuration_file);
+        return 1;
+    }
+
+    if (arguments.debug) {
+        printf(
+            "Config loaded from '%s': templates.path=%s, "
+            "templates.default=%s\n",
+            expand_path(arguments.configuration_file),
+            expand_path(configuration.templates_path),
+            configuration.templates_default);
+    }
+
+    /* Define the correct template file to use */
+    if (arguments.template_file == NULL) {
+        arguments.template_file =
+            string_append(expand_path(configuration.templates_path),
+                          configuration.templates_default);
+    } else if (!file_exists(arguments.template_file)) {
+        arguments.template_file = string_prepend(
+            arguments.template_file, expand_path(configuration.templates_path));
+    }
+
+    /* use projet name for output dir if not stated otherwise */
     if (arguments.output_dir == NULL) {
         arguments.output_dir = strdup(arguments.project_name);
     }
 
-    char *tmp_template_file = "/tmp/.mkfrom.tmpl";
     copy_file_to(arguments.template_file, tmp_template_file);
 
     metadata_init(arguments.project_name);

@@ -33,7 +33,7 @@ vpath %.c $(SRC_DIR) $(OUT_DIR)
 
 .DEFAULT_GOAL = build
 
-.PHONY: build setup clean debug doc fmt lex test
+.PHONY: build setup clean debug doc fmt lex test install
 
 define show
 	@./$(UTI_DIR)/change_output_color.sh $(1) $(2)
@@ -75,6 +75,13 @@ test: build
 	@./$(TST_DIR)/test_template.sh -o $(OUT_DIR)/nome_da_pasta -t $(TPL_DIR)/flex.tmpl flexample
 	@./$(TST_DIR)/test_template.sh -o $(OUT_DIR)/pastas_nodejs -t $(TPL_DIR)/node.tmpl nodexample
 	@./$(TST_DIR)/test_template.sh -o $(OUT_DIR)/projeto_em_c -t $(TPL_DIR)/c.tmpl cemple
+
+install: build
+	mkdir -p ~/.config/mkfromtemplate/
+	cp -r $(TPL_DIR) ~/.config/mkfromtemplate/
+	cp config.ini ~/.config/mkfromtemplate/
+	sudo cp $(BIN_DIR)/$(PROGRAM) /usr/bin/
+	sudo cp $(UTI_DIR)/mkft /usr/bin/
 
 setup:
 	@mkdir -p $(BIN_DIR)

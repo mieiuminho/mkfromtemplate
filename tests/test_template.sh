@@ -14,7 +14,7 @@ EXAMPLE:
 OPTIONS:
         -h, --help              Display this help message.
         -o <OUT_DIR>            The output directory.
-        -t <TEMPLATE>           The tempalte file to use.
+        -t <TEMPLATE>           The template file to use.
 EOF
 }
 
@@ -58,7 +58,7 @@ project=$1
 
 rm -rf "$output_dir"
 
-./bin/mkfromtemplate -o "$output_dir" -t "$template_file" "$project"
+./bin/mkfromtemplate -c "$(dirname $0)/config.ini" -o "$output_dir" -t "$template_file" "$project"
 
 expected_output_tree="$(dirname $0)/$(basename $template_file).tree"
 expected_output_blob="$(dirname $0)/$(basename $template_file).blob"

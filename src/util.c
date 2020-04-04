@@ -43,6 +43,29 @@ void copy_file_to(const char* source, const char* dest) {
 }
 
 /**
+ * @brief Check if a file exist using fopen() function
+ *
+ * @param filename the file to check
+ * @return 1 if the file exist otherwise 0
+ */
+int file_exists(const char* filename) {
+    FILE* file;
+    if ((file = fopen(filename, "r"))) {
+        fclose(file);
+        return 1;
+    }
+    return 0;
+}
+
+char* expand_path(const char* path) {
+    if ('~' == path[0]) {
+        return string_prepend(path + 1, getenv("HOME"));
+    } else {
+        return strdup(path);
+    }
+}
+
+/**
  * @brief Prependes pre_text to text
  *
  * @details This function creates a string with enough space for pre_text and
