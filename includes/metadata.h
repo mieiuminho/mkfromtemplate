@@ -3,7 +3,7 @@
 
 void metadata_init(char *project_name);
 
-void metadata_add(char *text);
+void metadata_add(const char *variable, const char *value);
 
 char *metadata_get(const char *variable);
 

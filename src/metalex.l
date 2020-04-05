@@ -29,7 +29,21 @@ SEPARATOR       ^{ws}==={ws}
 
 {SEPARATOR}meta{ws}                 BEGIN METADATA;
 
-<METADATA>{qname}\:{ws}(.)+         { metadata_add(yytext); }
+<METADATA>{qname}\:{ws}(.)+         { 
+    char *var_name;
+    char *var_value;
+
+    const char separator[2] = ":";
+    char *token = strtok(yytext, separator);
+
+    var_name = strdup(token);
+
+    token = strtok(NULL, separator);
+
+    var_value = trim_whitespace(token);
+
+    metadata_add(var_name, var_value);
+}
 
 <METADATA>{SEPARATOR}{qname}        {
     BEGIN 0;

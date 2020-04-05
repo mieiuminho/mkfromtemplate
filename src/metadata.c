@@ -25,20 +25,8 @@ void metadata_init(char *project_name) {
     g_hash_table_insert(hash_table_metadata, "name", strdup(project_name));
 }
 
-void metadata_add(char *text) {
-    char *var_name;
-    char *var_value;
-
-    const char separator[2] = ":";
-    char *token = strtok(text, separator);
-
-    var_name = strdup(token);
-
-    token = strtok(NULL, separator);
-
-    var_value = trim_whitespace(token);
-
-    g_hash_table_insert(hash_table_metadata, var_name, var_value);
+void metadata_add(const char *variable, const char *value) {
+    g_hash_table_insert(hash_table_metadata, strdup(variable), strdup(value));
 }
 
 char *metadata_get(const char *variable) {
