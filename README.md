@@ -64,6 +64,12 @@ Run the tests.
 make test
 ```
 
+Run the benchmarks.
+
+```
+make benchmark
+```
+
 Format your code.
 
 ```

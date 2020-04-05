@@ -1,0 +1,16 @@
+├── pom.xml
+├── README.md
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── javexample
+    │   │       ├── Application.java
+    │   │       ├── model
+    │   │       └── util
+    │   └── resources
+    │       └── log4j2.xml
+    └── test
+        ├── java
+        └── resources
+
+10 directories, 4 files

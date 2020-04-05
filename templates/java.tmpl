@@ -1,0 +1,531 @@
+=== meta
+
+version: 0.1.0
+java: 11
+main: Application
+description: FIXME
+title: FIXME
+
+=== tree
+
+- pom.xml
+- README.md
+- .editorconfig
+- .checkstyle.xml
+- src/
+-- main/
+--- java/
+---- {%name%}/
+----- {%main%}.java
+----- model/
+----- util/
+--- resources/
+---- log4j2.xml
+-- test/
+--- java/
+--- resources/
+
+=== pom.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.gitlab.{%username%}</groupId>
+    <artifactId>{%name%}</artifactId>
+    <version>{%version%}</version>
+
+    <name>{%title%}</name>
+    <description>
+        {%description%}
+    </description>
+
+    <developers>
+        <developer>
+            <id>{%username%}</id>
+            <name>{%author%}</name>
+            <email>{%email%}</email>
+        </developer>
+    </developers>
+
+    <properties>
+        <java.version>{%java%}</java.version>
+        <project.encoding>UTF-8</project.encoding>
+        <main.class>{%name%}/{%main%}</main.class>
+    </properties>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.beust/jcommander -->
+        <dependency>
+            <groupId>com.beust</groupId>
+            <artifactId>jcommander</artifactId>
+            <version>1.78</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.13.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>${project.encoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <configuration>
+                    <mainClass>${main.class}</mainClass>
+                    <arguments>
+                        <argument>-l</argument>
+                        <argument>20</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>${main.class}</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>${main.class}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.coveo</groupId>
+                <artifactId>fmt-maven-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <verbose>true</verbose>
+                    <skipSortingImports>true</skipSortingImports>
+                    <style>aosp</style>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <encoding>${project.encoding}</encoding>
+                    <configLocation>.checkstyle.xml</configLocation>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <encoding>${project.encoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.8.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M3</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <encoding>${project.encoding}</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+
+=== .editorconfig
+root = true
+
+[*]
+charset = utf-8
+end_of_line = LF
+max_line_length = 80
+indent_style = space
+insert_final_newline = true
+
+[*.{java, xml}]
+indent_size = 4
+max_line_length = 120
+
+[*.sh]
+indent_size = 2
+
+=== .checkstyle.xml
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+        "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<!--
+  Checkstyle configuration that checks the sun coding conventions from:
+    - the Java Language Specification at
+      http://java.sun.com/docs/books/jls/second_edition/html/index.html
+    - the Sun Code Conventions at http://java.sun.com/docs/codeconv/
+    - the Javadoc guidelines at
+      http://java.sun.com/j2se/javadoc/writingdoccomments/index.html
+    - the JDK Api documentation http://java.sun.com/j2se/docs/api/index.html
+    - some best practices
+  Checkstyle is very configurable. Be sure to read the documentation at
+  http://checkstyle.sf.net (or in your downloaded distribution).
+  Most Checks are configurable, be sure to consult the documentation.
+  To completely disable a check, just comment it out or delete it from the file.
+  Finally, it is worth reading the documentation.
+-->
+
+<module name="Checker">
+    <!--
+        If you set the basedir property below, then all reported file
+        names will be relative to the specified directory. See
+        http://checkstyle.sourceforge.net/5.x/config.html#Checker
+        <property name="basedir" value="${basedir}"/>
+    -->
+
+    <!-- Checks whether files end with a new line.                        -->
+    <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
+    <module name="NewlineAtEndOfFile"/>
+
+    <!-- Checks that property files contain the same keys.         -->
+    <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
+    <module name="Translation"/>
+
+    <!-- Checks for Size Violations.                    -->
+    <!-- See http://checkstyle.sf.net/config_sizes.html -->
+    <module name="FileLength"/>
+
+    <!-- Checks for whitespace                               -->
+    <!-- See http://checkstyle.sf.net/config_whitespace.html -->
+    <module name="FileTabCharacter"/>
+
+    <!-- Miscellaneous other checks.                   -->
+    <!-- See http://checkstyle.sf.net/config_misc.html -->
+    <module name="RegexpSingleline">
+        <property name="format" value="\s+$"/>
+        <property name="minimum" value="0"/>
+        <property name="maximum" value="0"/>
+        <property name="message" value="Line has trailing spaces."/>
+    </module>
+
+    <module name="SuppressWarningsFilter"/>
+
+    <module name="TreeWalker">
+        <module name="SuppressWarningsHolder"/>
+
+        <!-- Checks for Naming Conventions.                  -->
+        <!-- See http://checkstyle.sf.net/config_naming.html -->
+        <module name="ConstantName"/>
+        <module name="LocalFinalVariableName"/>
+        <module name="LocalVariableName"/>
+        <module name="MemberName"/>
+        <module name="MethodName"/>
+        <module name="PackageName"/>
+        <module name="ParameterName"/>
+        <module name="StaticVariableName"/>
+        <module name="TypeName"/>
+
+
+        <!-- Checks for imports                              -->
+        <!-- See http://checkstyle.sf.net/config_import.html -->
+        <module name="AvoidStarImport"/>
+        <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
+
+
+        <!-- Checks for Size Violations.                    -->
+        <!-- See http://checkstyle.sf.net/config_sizes.html -->
+        <module name="LineLength">
+            <property name="max" value="120"/>
+        </module>
+        <module name="MethodLength"/>
+        <module name="ParameterNumber"/>
+
+
+        <!-- Checks for whitespace                               -->
+        <!-- See http://checkstyle.sf.net/config_whitespace.html -->
+        <module name="EmptyForIteratorPad"/>
+        <module name="GenericWhitespace"/>
+        <module name="MethodParamPad"/>
+        <module name="NoWhitespaceAfter"/>
+        <module name="NoWhitespaceBefore"/>
+        <module name="OperatorWrap"/>
+        <module name="ParenPad"/>
+        <module name="TypecastParenPad"/>
+        <module name="WhitespaceAfter"/>
+<!--        <module name="WhitespaceAround"/>-->
+
+
+        <!-- Modifier Checks                                    -->
+        <!-- See http://checkstyle.sf.net/config_modifiers.html -->
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+
+
+        <!-- Checks for blocks. You know, those {}'s         -->
+        <!-- See http://checkstyle.sf.net/config_blocks.html -->
+        <module name="AvoidNestedBlocks">
+            <property name="allowInSwitchCase" value="true"/>
+        </module>
+        <module name="EmptyBlock"/>
+        <module name="LeftCurly"/>
+        <!-- <module name="NeedBraces"/ -->
+        <module name="RightCurly"/>
+
+        <!-- Checks for common coding problems               -->
+        <!-- See http://checkstyle.sf.net/config_coding.html -->
+        <module name="AvoidInlineConditionals"/>
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
+        <module name="HiddenField">
+            <property name="ignoreConstructorParameter" value="true"/>
+            <property name="ignoreSetter" value="true"/>
+        </module>
+        <module name="IllegalInstantiation"/>
+        <module name="InnerAssignment"/>
+        <module name="MagicNumber"/>
+        <module name="MissingSwitchDefault"/>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+
+        <!-- Checks for class design                         -->
+        <!-- See http://checkstyle.sf.net/config_design.html -->
+        <module name="DesignForExtension"/>
+        <module name="FinalClass"/>
+        <module name="HideUtilityClassConstructor"/>
+        <module name="InterfaceIsType"/>
+        <module name="VisibilityModifier"/>
+
+
+        <!-- Miscellaneous other checks.                   -->
+        <!-- See http://checkstyle.sf.net/config_misc.html -->
+        <module name="ArrayTypeStyle"/>
+        <module name="FinalParameters"/>
+        <module name="TodoComment"/>
+        <module name="UpperEll"/>
+
+    </module>
+</module>
+
+=== src/main/resources/log4j2.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+<Appenders>
+    <Console name="Console" target="SYSTEM_OUT">
+        <PatternLayout pattern="%highlight{%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=white, DEBUG=green bold, TRACE=blue}"/>
+    </Console>
+    <RollingFile name="TextFile" fileName="target/logs/app.log"
+                 filePattern="target/logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+        <PatternLayout>
+            <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
+        </PatternLayout>
+        <Policies>
+            <TimeBasedTriggeringPolicy/>
+            <SizeBasedTriggeringPolicy size="10 MB"/>
+        </Policies>
+    </RollingFile>
+    <RollingFile name="HTMLFile" fileName="target/logs/index.html"
+                 filePattern="target/logs/app-info-%d{yyyy-MM-dd}.html">
+        <HTMLLayout charset="UTF-8" title="FileShare Server Logs" locationInfo="true" />
+        <Policies>
+            <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            <SizeBasedTriggeringPolicy size="10 MB" />
+        </Policies>
+    </RollingFile>
+</Appenders>
+<Loggers>
+    <Root level="all">
+        <AppenderRef ref="Console"/>
+        <AppenderRef ref="TextFile"/>
+        <AppenderRef ref="HTMLFile"/>
+    </Root>
+</Loggers>
+</Configuration>
+
+=== src/main/java/{%name%}/{%main%}.java
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public final class {%main%} {
+    private static Logger log = LogManager.getLogger(App.class);
+
+    private static final String PROGRAM_NAME = "java-tmpl";
+
+    @Parameter(
+            names = {"-h", "--help"},
+            help = true,
+            description = "Displays help information")
+    private boolean help;
+
+    @Parameter(
+            names = {"--length", "-l"},
+            required = true)
+    private int length;
+
+    @Parameter(names = {"--pattern", "-p"})
+    private int pattern = 0;
+
+    @Parameter(
+            names = {"--users", "-u"},
+            variableArity = true,
+            description = "List of users whose home directories will be archived as per profile.")
+    private List<String> users = new ArrayList<>();
+
+    private App() {}
+
+    public static void main(final String[] args) {
+        new App().start(args);
+    }
+
+    public void start(final String[] args) {
+        this.parseArguments(args);
+
+        log.info("Application started successfully");
+
+        System.out.println("length: " + this.length);
+        System.out.println("pattern: " + this.pattern);
+        System.out.println("users: " + this.users);
+    }
+
+    public void parseArguments(final String[] args) {
+        JCommander commands = new JCommander(this);
+        commands.setProgramName(PROGRAM_NAME);
+
+        try {
+            commands.parse(args);
+        } catch (ParameterException exception) {
+            System.err.println(exception.getMessage());
+            commands.usage();
+            System.exit(1);
+        }
+
+        if (this.help) {
+            commands.usage();
+            System.exit(0);
+        }
+    }
+}
+
+=== README.md
+
+[hugo]: https://github.com/HugoCarvalho99
+[hugo-pic]: https://github.com/HugoCarvalho99.png?size=120
+[nelson]: https://github.com/nelsonmestevao
+[nelson-pic]: https://github.com/nelsonmestevao.png?size=120
+[pedro]: https://github.com/pedroribeiro22
+[pedro-pic]: https://github.com/pedroribeiro22.png?size=120
+
+# {%name%}
+
+> {%description%}
+
+## :rocket: Getting Started
+
+These instructions will get you a copy of the project up and running on your
+local machine for development and testing purposes.
+
+### :inbox_tray: Prerequisites
+
+The following software is required to be installed on your system:
+
+- [Java SDK {%java%}](https://openjdk.java.net/)
+- [Maven](https://maven.apache.org/maven-features.html)
+
+### :hammer: Development
+
+Run the project in a clean build.
+
+```bash
+mvn clean compile exec:java
+```
+
+Run the tests.
+
+```bash
+mvn test
+```
+
+Format the code accordingly to common [guide lines](https://github.com/google/google-java-format).
+
+```bash
+mvn fmt:format
+```
+
+Lint your code with _checkstyle_.
+
+```bash
+mvn checkstyle:check
+```
+
+### :package: Deployment
+
+Bundle the app into jar file.
+
+```bash
+mvn package
+```
+
+## :busts_in_silhouette: Author
+
+Contact {%author%} at {%email%}.
