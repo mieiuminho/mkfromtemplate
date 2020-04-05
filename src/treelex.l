@@ -15,7 +15,6 @@
 
 d               [0-9]
 ws              [ \t]*
-qname           [a-zA-Z][a-zA-Z0-9_\-]*
 filename        [a-zA-Z0-9\._][a-zA-Z0-9_\-\.]*
 SEPARATOR       ^{ws}==={ws}
 
@@ -37,7 +36,7 @@ SEPARATOR       ^{ws}==={ws}
     filetree_insert(entry, level);
 }
 
-<TREE>{SEPARATOR}{qname}            {
+<TREE>{SEPARATOR}{filename}            {
     yyterminate();
 }
 
