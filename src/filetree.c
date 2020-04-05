@@ -85,6 +85,6 @@ gboolean create_filetree_entry(GNode* node, gpointer data) {
 }
 
 void create_filetree() {
-    g_node_traverse(nary_file_tree, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
-                    create_filetree_entry, NULL);
+    g_node_traverse(g_node_get_root(nary_file_tree), G_PRE_ORDER,
+                    G_TRAVERSE_ALL, -1, create_filetree_entry, NULL);
 }
