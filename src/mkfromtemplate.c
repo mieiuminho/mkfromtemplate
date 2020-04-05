@@ -107,6 +107,8 @@ static int handler(void *configuration, const char *section, const char *name,
         config->templates_path = strdup(value);
     } else if (MATCH("templates", "default")) {
         config->templates_default = strdup(value);
+    } else if (strcmp(section, "variables") == 0) {
+        metadata_add(name, value);
     } else {
         /* unknown section/name, error */
         return 0;
@@ -129,6 +131,8 @@ int main(int argc, char *argv[]) {
 
     /* Parse command line arguments */
     argp_parse(&argp, argc, argv, 0, 0, &arguments);
+
+    metadata_init(arguments.project_name);
 
     /* Parse configuration file */
     if (ini_parse(arguments.configuration_file, handler, &configuration) < 0) {
@@ -162,7 +166,6 @@ int main(int argc, char *argv[]) {
 
     copy_file_to(arguments.template_file, tmp_template_file);
 
-    metadata_init(arguments.project_name);
     dup2(open(tmp_template_file, O_RDONLY), 0);
     metalex();
     metadata_replace_values_in_template(tmp_template_file);
