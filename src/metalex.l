@@ -21,6 +21,7 @@
 d               [0-9]
 ws              [ \t]*
 qname           [a-zA-Z][a-zA-Z0-9_\-]*
+filename        [a-zA-Z0-9\._][a-zA-Z0-9_\-\.]*
 SEPARATOR       ^{ws}==={ws}
 
 %%
@@ -29,7 +30,7 @@ SEPARATOR       ^{ws}==={ws}
 
 {SEPARATOR}meta{ws}                 BEGIN METADATA;
 
-<METADATA>{qname}\:{ws}(.)+         { 
+<METADATA>{qname}\:{ws}(.)+         {
     char *var_name;
     char *var_value;
 
@@ -45,7 +46,7 @@ SEPARATOR       ^{ws}==={ws}
     metadata_add(var_name, var_value);
 }
 
-<METADATA>{SEPARATOR}{qname}        {
+<METADATA>{SEPARATOR}{filename}{ws} {
     BEGIN 0;
     yyterminate();
 }
